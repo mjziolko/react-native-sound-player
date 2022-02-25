@@ -160,7 +160,7 @@ RCT_REMAP_METHOD(getInfo, getInfoWithResolver:(RCTPromiseResolveBlock) resolve r
     }
 
     NSData *data = [[NSData alloc] initWithBase64EncodedString:base64String options:0];
-    self.player = [[AVAudioPlayer alloc] initWithData:data error:nil];
+    self.player = [[AVAudioPlayer alloc] initWithData:data fileTypeHint:@"public.mp3" error:nil];
     [self.player setDelegate:self];
     [self.player setNumberOfLoops:self.loopCount];
     [self.player prepareToPlay];
