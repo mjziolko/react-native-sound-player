@@ -5,7 +5,8 @@ declare module "react-native-sound-player" {
     | "FinishedLoading"
     | "FinishedPlaying"
     | "FinishedLoadingURL"
-    | "FinishedLoadingFile";
+    | "FinishedLoadingFile"
+    | "FinishedLoadingData";
 
   export type SoundPlayerEventData = {
     success?: boolean;
@@ -18,6 +19,7 @@ declare module "react-native-sound-player" {
     playSoundFile: (name: string, type: string) => void;
     playSoundFileWithDelay: (name: string, type: string, delay: number) => void;
     loadSoundFile: (name: string, type: string) => void;
+    playData: (base64String: string) => void;
     playUrl: (url: string) => void;
     loadUrl: (url: string) => void;
     /** @deprecated  please use addEventListener*/

@@ -27,6 +27,10 @@ export default {
     RNSoundPlayer.setNumberOfLoops(loops);
   },
 
+  playData: (base64String: string) => {
+    RNSoundPlayer.playData(base64String);
+  },
+
   playUrl: (url: string) => {
     RNSoundPlayer.playUrl(url);
   },
@@ -64,7 +68,8 @@ export default {
       | "FinishedLoading"
       | "FinishedPlaying"
       | "FinishedLoadingURL"
-      | "FinishedLoadingFile",
+      | "FinishedLoadingFile"
+      | "FinishedLoadingData",
     callback: Function
   ) => _soundPlayerEmitter.addListener(eventName, callback),
 

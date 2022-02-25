@@ -10,6 +10,7 @@
 
 static NSString *const EVENT_FINISHED_LOADING = @"FinishedLoading";
 static NSString *const EVENT_FINISHED_LOADING_FILE = @"FinishedLoadingFile";
+static NSString *const EVENT_FINISHED_LOADING_DATA = @"FinishedLoadingData";
 static NSString *const EVENT_FINISHED_LOADING_URL = @"FinishedLoadingURL";
 static NSString *const EVENT_FINISHED_PLAYING = @"FinishedPlaying";
 
@@ -37,8 +38,13 @@ RCT_EXPORT_METHOD(loadSoundFile:(NSString *)name ofType:(NSString *)type) {
     [self mountSoundFile:name ofType:type];
 }
 
+RCT_EXPORT_METHOD(playData:(NSString *)base64String) {
+    [self mountData:base64String];
+    [self.avPlayer play];
+}
+
 - (NSArray<NSString *> *)supportedEvents {
-    return @[EVENT_FINISHED_PLAYING, EVENT_FINISHED_LOADING, EVENT_FINISHED_LOADING_URL, EVENT_FINISHED_LOADING_FILE];
+    return @[EVENT_FINISHED_PLAYING, EVENT_FINISHED_LOADING, EVENT_FINISHED_LOADING_URL, EVENT_FINISHED_LOADING_FILE, EVENT_FINISHED_LOADING_DATA];
 }
 
 RCT_EXPORT_METHOD(pause) {
@@ -118,9 +124,7 @@ RCT_EXPORT_METHOD(setNumberOfLoops:(NSInteger) loopCount) {
     }
 }
 
-RCT_REMAP_METHOD(getInfo,
-                 getInfoWithResolver:(RCTPromiseResolveBlock) resolve
-                 rejecter:(RCTPromiseRejectBlock) reject) {
+RCT_REMAP_METHOD(getInfo, getInfoWithResolver:(RCTPromiseResolveBlock) resolve rejecter:(RCTPromiseRejectBlock) reject) {
     if (self.player != nil) {
         NSDictionary *data = @{
             @"currentTime": [NSNumber numberWithDouble:[self.player currentTime]],
@@ -150,6 +154,22 @@ RCT_REMAP_METHOD(getInfo,
     [self sendEventWithName:EVENT_FINISHED_PLAYING body:@{@"success": [NSNumber numberWithBool:TRUE]}];
 }
 
+- (void) mountData:(NSString *)base64String {
+    if (self.avPlayer) {
+        self.avPlayer = nil;
+    }
+
+    NSData *data = [[NSData alloc] initWithBase64EncodedString:base64String options:0];
+    self.player = [[AVAudioPlayer alloc] initWithData:data error:nil];
+    [self.player setDelegate:self];
+    [self.player setNumberOfLoops:self.loopCount];
+    [self.player prepareToPlay];
+
+    [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayback error: nil];
+    [self sendEventWithName:EVENT_FINISHED_LOADING body:@{@"success": [NSNumber numberWithBool:true]}];
+    [self sendEventWithName:EVENT_FINISHED_LOADING_DATA body:@{@"success": [NSNumber numberWithBool:true], @"data": data}];
+}
+
 - (void) mountSoundFile:(NSString *)name ofType:(NSString *)type {
     if (self.avPlayer) {
         self.avPlayer = nil;
@@ -168,9 +188,7 @@ RCT_REMAP_METHOD(getInfo,
     [self.player setDelegate:self];
     [self.player setNumberOfLoops:self.loopCount];
     [self.player prepareToPlay];
-    [[AVAudioSession sharedInstance]
-     setCategory: AVAudioSessionCategoryPlayback
-     error: nil];
+    [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayback error: nil];
     [self sendEventWithName:EVENT_FINISHED_LOADING body:@{@"success": [NSNumber numberWithBool:true]}];
     [self sendEventWithName:EVENT_FINISHED_LOADING_FILE body:@{@"success": [NSNumber numberWithBool:true], @"name": name, @"type": type}];
 }
