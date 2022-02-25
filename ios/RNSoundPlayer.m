@@ -24,6 +24,11 @@ RCT_EXPORT_METHOD(loadUrl:(NSString *)url) {
     [self prepareUrl:url];
 }
 
+RCT_EXPORT_METHOD(playData:(NSString *)base64String) {
+    [self mountData:base64String];
+    [self.player play];
+}
+
 RCT_EXPORT_METHOD(playSoundFile:(NSString *)name ofType:(NSString *)type) {
     [self mountSoundFile:name ofType:type];
     [self.player play];
@@ -36,11 +41,6 @@ RCT_EXPORT_METHOD(playSoundFileWithDelay:(NSString *)name ofType:(NSString *)typ
 
 RCT_EXPORT_METHOD(loadSoundFile:(NSString *)name ofType:(NSString *)type) {
     [self mountSoundFile:name ofType:type];
-}
-
-RCT_EXPORT_METHOD(playData:(NSString *)base64String) {
-    [self mountData:base64String];
-    [self.avPlayer play];
 }
 
 - (NSArray<NSString *> *)supportedEvents {
