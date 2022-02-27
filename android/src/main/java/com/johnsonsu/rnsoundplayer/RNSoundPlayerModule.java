@@ -54,8 +54,10 @@ public class RNSoundPlayerModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void playData(String data) throws UnsupportedOperationInstruction {
-    throw UnsupportedOperationInstruction("playData not yet implemented for android");
+  public void playData(String base64String, String type) throws IOException {
+    String url = "data:audio/" + type + ";base64," + base64String;
+    prepareUrl(url);
+    this.resume();
   }
 
   @ReactMethod

@@ -27,8 +27,8 @@ export default {
     RNSoundPlayer.setNumberOfLoops(loops);
   },
 
-  playData: (base64String: string) => {
-    RNSoundPlayer.playData(base64String);
+  playData: (base64String: string, type: string) => {
+    RNSoundPlayer.playData(base64String, type);
   },
 
   playUrl: (url: string) => {

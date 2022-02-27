@@ -24,7 +24,7 @@ RCT_EXPORT_METHOD(loadUrl:(NSString *)url) {
     [self prepareUrl:url];
 }
 
-RCT_EXPORT_METHOD(playData:(NSString *)base64String) {
+RCT_EXPORT_METHOD(playData:(NSString *)base64String ofType: (NSString *)type) {
     [self mountData:base64String];
     [self.player play];
 }
